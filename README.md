@@ -20,8 +20,7 @@
 
 ## Оновлюємо контакт та виводимо його в консоль
 
-`node index.js --action="update" --id ZrYIn1H3rYDMIAoK8ZZGf `
-`--name "Alex NeverOff" --email neveroff@ukr.net --phone 322-22-22`
+`node index.js --action="update" --id ZrYIn1H3rYDMIAoK8ZZGf --name "Alex NeverOff" --email neveroff@ukr.net --phone 322-22-22`
 
 ![Task 4: Update contact in contacts list](./assets/04-update.jpg)
 
