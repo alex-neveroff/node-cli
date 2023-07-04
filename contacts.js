@@ -1,26 +1,67 @@
 const fs = require("fs/promises");
 const path = require("path");
+const { nanoid } = require("nanoid");
 const contactsPath = path.join(__dirname, "db/contacts.json");
 
 // Вивести список усіх контактів
-const listContacts = async () => {
+const getListContacts = async () => {
   const allContacts = await fs.readFile(contactsPath);
   return JSON.parse(allContacts);
 };
 
 // Вивести один контакт за його id
 const getContactById = async (contactId) => {
-  // ...твій код. Повертає об'єкт контакту з таким id. Повертає null, якщо контакт з таким id не знайдений.
-};
-
-// Видалити один контакт за його id
-const removeContact = async (contactId) => {
-  // ...твій код. Повертає об'єкт видаленого контакту. Повертає null, якщо контакт з таким id не знайдений.
+  const allContacts = await getListContacts();
+  const foundContact = allContacts.find((contact) => contact.id === contactId);
+  return foundContact || null;
 };
 
 // Додати до списку новий контакт, створений на основі переданих даних
 const addContact = async (name, email, phone) => {
-  // ...твій код. Повертає об'єкт доданого контакту.
+  const allContacts = await getListContacts();
+  const newContact = {
+    id: nanoid(),
+    name,
+    email,
+    phone,
+  };
+  allContacts.push(newContact);
+  await fs.writeFile(contactsPath, JSON.stringify(allContacts, null, 2));
+  return newContact;
 };
 
-module.exports = { listContacts, addContact, getContactById, removeContact };
+// Оновити один контакт за його id
+const updateContact = async (contactId, name, email, phone) => {
+  const allContacts = await getListContacts();
+  const index = allContacts.findIndex((contact) => contact.id === contactId);
+  if (index === -1) {
+    return null;
+  }
+  allContacts[index] = { id: contactId, name, email, phone };
+  await fs.writeFile(contactsPath, JSON.stringify(allContacts, null, 2));
+  return allContacts[index];
+};
+
+// Видалити один контакт за його id
+const removeContact = async (contactId) => {
+  const allContacts = await getListContacts();
+  const foundContact = allContacts.find((contact) => contact.id === contactId);
+  if (foundContact) {
+    const withoutRemovedContact = allContacts.filter(
+      (contact) => contact.id !== contactId
+    );
+    await fs.writeFile(
+      contactsPath,
+      JSON.stringify(withoutRemovedContact, null, 2)
+    );
+  }
+  return foundContact || null;
+};
+
+module.exports = {
+  getListContacts,
+  addContact,
+  getContactById,
+  removeContact,
+  updateContact,
+};
