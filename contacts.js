@@ -11,19 +11,21 @@ const getListContacts = async () => {
 
 // Вивести один контакт за його id
 const getContactById = async (contactId) => {
+  const stringedId = String(contactId);
   const allContacts = await getListContacts();
-  const foundContact = allContacts.find((contact) => contact.id === contactId);
+  const foundContact = allContacts.find((contact) => contact.id === stringedId);
   return foundContact || null;
 };
 
 // Додати до списку новий контакт, створений на основі переданих даних
 const addContact = async (name, email, phone) => {
+  const stringedPhone = String(phone);
   const allContacts = await getListContacts();
   const newContact = {
     id: nanoid(),
     name,
     email,
-    phone,
+    phone: stringedPhone,
   };
   allContacts.push(newContact);
   await fs.writeFile(contactsPath, JSON.stringify(allContacts, null, 2));
@@ -32,23 +34,31 @@ const addContact = async (name, email, phone) => {
 
 // Оновити один контакт за його id
 const updateContact = async (contactId, name, email, phone) => {
+  const stringedId = String(contactId);
+  const stringedPhone = String(phone);
   const allContacts = await getListContacts();
-  const index = allContacts.findIndex((contact) => contact.id === contactId);
+  const index = allContacts.findIndex((contact) => contact.id === stringedId);
   if (index === -1) {
     return null;
   }
-  allContacts[index] = { id: contactId, name, email, phone };
+  allContacts[index] = {
+    id: stringedId,
+    name,
+    email,
+    phone: stringedPhone,
+  };
   await fs.writeFile(contactsPath, JSON.stringify(allContacts, null, 2));
   return allContacts[index];
 };
 
 // Видалити один контакт за його id
 const removeContact = async (contactId) => {
+  const stringedId = String(contactId);
   const allContacts = await getListContacts();
-  const foundContact = allContacts.find((contact) => contact.id === contactId);
+  const foundContact = allContacts.find((contact) => contact.id === stringedId);
   if (foundContact) {
     const withoutRemovedContact = allContacts.filter(
-      (contact) => contact.id !== contactId
+      (contact) => contact.id !== stringedId
     );
     await fs.writeFile(
       contactsPath,
