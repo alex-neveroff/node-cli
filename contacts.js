@@ -1,7 +1,7 @@
 const fs = require("fs/promises");
 const path = require("path");
 const { nanoid } = require("nanoid");
-const contactsPath = path.join(__dirname, "db/contacts.json");
+const contactsPath = path.join(__dirname, "db", "contacts.json");
 
 // Вивести список усіх контактів
 const getListContacts = async () => {
